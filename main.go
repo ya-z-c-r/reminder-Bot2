@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"os"
 	"os/signal"
@@ -9,9 +10,24 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
+func mustToken() string {
+	token := flag.String("token_for_reminder_bot",
+		"",
+		"токен телеграмм бота",
+	)
+
+	flag.Parse()
+
+	if *token == "" {
+		log.Fatal("токена не обнаружено")
+	}
+
+	return *token
+}
+
 func main() {
 	// Замените "YOUR_BOT_TOKEN" на реальный токен от BotFather
-	botToken := "8775462367:AAHtFEify4Z_9lnNWQ6Ot_uX73OfwuZwW4s"
+	botToken := mustToken()
 
 	bot, err := tgbotapi.NewBotAPI(botToken)
 	if err != nil {
