@@ -11,8 +11,8 @@ import (
 
 func main() {
 	// Замените "YOUR_BOT_TOKEN" на реальный токен от BotFather
-	botToken := "YOUR_BOT_TOKEN"
-	
+	botToken := "8775462367:AAHtFEify4Z_9lnNWQ6Ot_uX73OfwuZwW4s"
+
 	bot, err := tgbotapi.NewBotAPI(botToken)
 	if err != nil {
 		log.Panic(err)
@@ -20,13 +20,13 @@ func main() {
 
 	// Включаем режим отладки (опционально)
 	bot.Debug = true
-	
+
 	log.Printf("Авторизован как %s", bot.Self.UserName)
 
 	// Настройка обновлений
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
-	
+
 	updates := bot.GetUpdatesChan(u)
 
 	// Обработка сигнала для graceful shutdown
