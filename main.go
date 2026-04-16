@@ -51,6 +51,10 @@ func main() {
 	keyboard := tgbotapi.NewReplyKeyboard(
 		tgbotapi.NewKeyboardButtonRow(
 			tgbotapi.NewKeyboardButton("ping"),
+			tgbotapi.NewKeyboardButton("Добавить напоминание"),
+			tgbotapi.NewKeyboardButton("показать расписание на день"),
+			tgbotapi.NewKeyboardButton("изменить напоминание"),
+			tgbotapi.NewKeyboardButton("удалить напоминание"),
 		),
 	)
 
@@ -64,7 +68,7 @@ func main() {
 						log.Printf("Ошибка отправки сообщения: %v", err)
 					}
 				case "start":
-					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Нажми кнопку:")
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Давайте начнём")
 					msg.ReplyMarkup = keyboard
 					bot.Send(msg)
 				}
