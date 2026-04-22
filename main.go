@@ -7,7 +7,7 @@ import (
 
 	tb "gopkg.in/telebot.v3"
 
-	"reminder-Bot/handlers"
+	"reminder-bot/handlers"
 )
 
 func mustToken() string {
