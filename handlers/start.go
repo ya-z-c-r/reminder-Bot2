@@ -8,10 +8,12 @@ import (
 )
 
 func StartHandler(c tb.Context) error {
-	db.InitDB()
 	err := db.SaveUser(c.Sender())
 	if err != nil {
 		log.Fatal("ошибка при сохранении в бд")
 	}
-	return c.Send("Давайте начнём")
+	menu := &tb.ReplyMarkup{ResizeKeyboard: true}
+	btnAdd := menu.Text("Добавить напоминание")
+	menu.Reply(menu.Row(btnAdd))
+	return c.Send("Давайте начнём", menu)
 }

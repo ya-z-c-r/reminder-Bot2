@@ -9,7 +9,7 @@ import (
 
 var DB *sql.DB
 
-func InitDB() {
+func InitDB() error {
 	var err error
 
 	connStr := "host=localhost port=5432 user=postgres password=12344321 dbname=users sslmode=disable"
@@ -21,5 +21,7 @@ func InitDB() {
 
 	if err = DB.Ping(); err != nil {
 		log.Fatal(err)
+		return err
 	}
+	return nil
 }

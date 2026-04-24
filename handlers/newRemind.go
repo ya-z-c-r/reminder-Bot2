@@ -1,24 +1,43 @@
 package handlers
 
 import (
-	"log"
 	"reminder-bot/db"
+	"reminder-bot/state"
+	"time"
+
+	tb "gopkg.in/telebot.v3"
 )
 
-func newRemind(r db.Reminder) error {
-	_, err := db.DB.Exec(`
-		INSERT INTO reminders (user_id, text, category, remind_at, repeat_interval)
-		VALUES ($1, $2, $3, $4, $5)
-	`,
-		r.UserID,
-		r.Text,
-		r.Category,
-		r.RemindAt,
-		r.RepeatInterval,
-	)
+func HandleAddText(c tb.Context, flow *state.UserFlow) error {
+	flow.Text = c.Text()            // сохраняем текст
+	flow.State = state.StateAddTime // меняем состояние
+
+	return c.Send("Теперь введи дату время в формате(2006-01-02 15:04)")
+}
+
+func HandleAddTime(c tb.Context, flow *state.UserFlow) error {
+	userID := c.Sender().ID
+
+	t, err := time.Parse("2006-01-02 15:04", c.Text())
+	// log.Println("Parsed time:", t)
 	if err != nil {
-		log.Fatal("ошибка записи напоминания в бд")
-		return err
+		return c.Send("Неверный формат 😢")
+	} else if t.Before(time.Now()) {
+		return c.Send("указанная дата в прошлом")
 	}
-	return nil
+
+	err = db.NewRemind(db.Reminder{
+		UserID:   userID,
+		Text:     flow.Text,
+		RemindAt: t,
+	})
+
+	if err != nil {
+		delete(state.Flows, userID)
+		return c.Send("Ошибка сохранения")
+	}
+
+	delete(state.Flows, userID)
+
+	return c.Send("Напоминание создано")
 }
