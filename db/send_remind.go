@@ -53,10 +53,12 @@ func StartReminderWorker(bot *tb.Bot) {
 
 		for _, r := range reminders {
 
-			_, err := bot.Send(&tb.User{ID: r.UserID}, r.Text)
-			if err != nil {
-				log.Println(err)
-				continue
+			if r.Text != "" {
+				_, err := bot.Send(&tb.User{ID: r.UserID}, r.Text)
+				if err != nil {
+					log.Println(err)
+					continue
+				}
 			}
 
 			err = MarkDone(r.ID)
@@ -65,6 +67,6 @@ func StartReminderWorker(bot *tb.Bot) {
 			}
 		}
 
-		time.Sleep(30 * time.Second)
+		time.Sleep(60 * time.Second)
 	}
 }

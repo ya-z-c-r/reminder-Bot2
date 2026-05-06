@@ -1,8 +1,10 @@
 package handlers
 
 import (
+	"log"
 	"reminder-bot/db"
 	"reminder-bot/state"
+	"reminder-bot/utils"
 	"time"
 
 	tb "gopkg.in/telebot.v3"
@@ -26,9 +28,9 @@ func HandleAddText(c tb.Context, flow *state.UserFlow) error {
 }
 
 func HandleAddTime(c tb.Context, flow *state.UserFlow) error {
-	userID := c.Sender().ID
+	//userID := c.Sender().ID
 
-	t, err := db.ParseHumanTime(c.Text())
+	t, err := utils.ParseHumanTime(c.Text())
 	// log.Println("Parsed time:", t, err)
 	if err != nil {
 		return c.Send("Неверный формат 😢")
@@ -36,10 +38,41 @@ func HandleAddTime(c tb.Context, flow *state.UserFlow) error {
 		return c.Send("указанная дата в прошлом")
 	}
 
-	err = db.NewRemind(db.Reminder{
-		UserID:   userID,
-		Text:     flow.Text,
-		RemindAt: t,
+	flow.RemindAt = t
+
+	menu := &tb.ReplyMarkup{}
+	repeatBtnY := menu.Data("да", "add_repeat")
+	repeatBtnN := menu.Data("нет", "not_add_repeat")
+	menu.Inline(
+		menu.Row(repeatBtnY, repeatBtnN),
+	)
+	return c.Send("Напоминание создано ты хочешь сделать его повторяющимся?", menu)
+}
+
+func HandlerAddRepeatInterval(c tb.Context, flow *state.UserFlow) error {
+	r, err := utils.ParseToCron(c.Text())
+
+	if err != nil {
+		log.Println("ошибка при получениее cron", err)
+	}
+
+	flow.RepeatInterval = r
+
+	return SaveNewRimind(c, flow)
+}
+
+func HandlerAddNewRemindWithoutRepeat(c tb.Context, flow *state.UserFlow) error {
+	// flow.RepeatInterval = ""
+	return SaveNewRimind(c, flow)
+}
+
+func SaveNewRimind(c tb.Context, flow *state.UserFlow) error {
+	userID := c.Sender().ID
+	err := db.NewRemind(db.Reminder{
+		UserID:         userID,
+		Text:           flow.Text,
+		RemindAt:       flow.RemindAt,
+		RepeatInterval: flow.RepeatInterval,
 	})
 
 	if err != nil {
@@ -49,5 +82,5 @@ func HandleAddTime(c tb.Context, flow *state.UserFlow) error {
 
 	delete(state.Flows, userID)
 
-	return c.Send("Напоминание создано")
+	return c.Send("напоминание создано")
 }
