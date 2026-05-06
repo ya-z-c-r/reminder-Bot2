@@ -43,6 +43,8 @@ func main() {
 		log.Print("база данных не активирована", err)
 	}
 
+	go db.StartReminderWorker(bot)
+
 	menu := &tb.ReplyMarkup{ResizeKeyboard: true}
 	btnAdd := menu.Text("Добавить напоминание")
 	menu.Reply(menu.Row(btnAdd))

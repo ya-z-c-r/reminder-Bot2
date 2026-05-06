@@ -8,4 +8,5 @@ type Reminder struct {
 	Category       string
 	RemindAt       time.Time
 	RepeatInterval string
+	ID             int
 }

@@ -72,7 +72,7 @@ func ParseHumanTime(input string) (time.Time, error) {
 		n, err := strconv.Atoi(parts[1])
 		if err == nil {
 			switch parts[2] {
-			case "минута", "минуты", "минут":
+			case "минута", "минуты", "минут", "минуту":
 				return now.Add(time.Duration(n) * time.Minute), nil
 			case "час", "часа", "часов":
 				return now.Add(time.Duration(n) * time.Hour), nil

@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"log"
 	"reminder-bot/db"
 	"reminder-bot/state"
 	"time"
@@ -30,7 +29,7 @@ func HandleAddTime(c tb.Context, flow *state.UserFlow) error {
 	userID := c.Sender().ID
 
 	t, err := db.ParseHumanTime(c.Text())
-	log.Println("Parsed time:", t, err)
+	// log.Println("Parsed time:", t, err)
 	if err != nil {
 		return c.Send("Неверный формат 😢")
 	} else if t.Before(time.Now()) {
