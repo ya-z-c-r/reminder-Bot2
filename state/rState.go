@@ -9,6 +9,7 @@ const (
 	StateAddText           State = "add_text"
 	StateAddTime           State = "add_time"
 	StateAddRepeatInterval State = "add_repeat_interval"
+	StateRepeatAddText     State = "add_repeat_text"
 )
 
 type UserFlow struct {

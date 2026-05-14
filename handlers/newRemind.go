@@ -40,13 +40,14 @@ func HandleAddTime(c tb.Context, flow *state.UserFlow) error {
 
 	flow.RemindAt = t
 
-	menu := &tb.ReplyMarkup{}
-	repeatBtnY := menu.Data("да", "add_repeat")
-	repeatBtnN := menu.Data("нет", "not_add_repeat")
-	menu.Inline(
-		menu.Row(repeatBtnY, repeatBtnN),
-	)
-	return c.Send("Напоминание создано ты хочешь сделать его повторяющимся?", menu)
+	err = SaveNewRimind(c, flow)
+
+	if err != nil {
+		c.Send("ошибка сохранения")
+		log.Print("ошибка сохранения одноразового напоминания", err)
+		return err
+	}
+	return err
 }
 
 func HandlerAddRepeatInterval(c tb.Context, flow *state.UserFlow) error {
@@ -54,6 +55,10 @@ func HandlerAddRepeatInterval(c tb.Context, flow *state.UserFlow) error {
 
 	if err != nil {
 		log.Println("ошибка при получениее cron", err)
+		c.Send("непонял, введите ещё раз")
+		for err != nil {
+			r, err = utils.ParseToCron(c.Text())
+		}
 	}
 
 	flow.RepeatInterval = r
@@ -61,23 +66,47 @@ func HandlerAddRepeatInterval(c tb.Context, flow *state.UserFlow) error {
 	return SaveNewRimind(c, flow)
 }
 
-func HandlerAddNewRemindWithoutRepeat(c tb.Context, flow *state.UserFlow) error {
-	// flow.RepeatInterval = ""
-	return SaveNewRimind(c, flow)
+
+func HandlerAddRepeatText(c tb.Context, flow *state.UserFlow) error {
+	flow.Text = c.Text()
+	flow.State = state.StateAddRepeatInterval
+	return c.Send(`введите период напоминаний. Примеры того как можно вводить:
+	каждый день в 15:00
+	каждый день в 9:00 и 18:00
+
+	каждый пн в 10:00
+	каждый понедельник и четверг в 12:30
+
+	каждые 2 часа
+	каждые 15 минут
+	каждые 3 дня в 10:00
+
+	каждый месяц 5 числа в 12:00
+	каждый месяц 1 и 15 числа в 09:00
+
+	в будни в 10:00
+	по выходным в 12:00`)
 }
 
 func SaveNewRimind(c tb.Context, flow *state.UserFlow) error {
 	userID := c.Sender().ID
-	err := db.NewRemind(db.Reminder{
+
+	reminder := db.Reminder{
 		UserID:         userID,
 		Text:           flow.Text,
 		RemindAt:       flow.RemindAt,
 		RepeatInterval: flow.RepeatInterval,
-	})
+	}
+
+	err := db.NewRemind(reminder)
 
 	if err != nil {
 		delete(state.Flows, userID)
 		return c.Send("Ошибка сохранения")
+	}
+
+	if reminder.RepeatInterval != "" {
+		db.NewReminderChan <- reminder
 	}
 
 	delete(state.Flows, userID)

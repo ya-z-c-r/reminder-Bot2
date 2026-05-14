@@ -27,6 +27,9 @@ func parseToCronInternal(input string) ([]string, error) {
 		return parseInterval(input)
 	}
 
+	if input == "каждую минуту" {
+		return []string{"* * * * *"}, nil
+	}
 	// -------------------------
 	// будни / выходные
 	// -------------------------
