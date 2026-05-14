@@ -7,4 +7,5 @@ require (
 	gopkg.in/telebot.v3 v3.3.8
 )
 
-require github.com/robfig/cron/v3 v3.0.1 // indirect
+require github.com/robfig/cron/v3 v3.0.1
+

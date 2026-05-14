@@ -20,9 +20,6 @@ var weekdays = map[string]int{
 func parseToCronInternal(input string) ([]string, error) {
 	input = normalize(input)
 
-	// -------------------------
-	// каждые N ...
-	// -------------------------
 	if strings.HasPrefix(input, "каждые") {
 		return parseInterval(input)
 	}
@@ -30,9 +27,7 @@ func parseToCronInternal(input string) ([]string, error) {
 	if input == "каждую минуту" {
 		return []string{"* * * * *"}, nil
 	}
-	// -------------------------
-	// будни / выходные
-	// -------------------------
+
 	if strings.Contains(input, "будни") {
 		return buildCronForDays(input, "1-5")
 	}
@@ -41,16 +36,10 @@ func parseToCronInternal(input string) ([]string, error) {
 		return buildCronForDays(input, "0,6")
 	}
 
-	// -------------------------
-	// каждый день
-	// -------------------------
 	if strings.Contains(input, "каждый день") {
 		return buildCronForDays(input, "*")
 	}
 
-	// -------------------------
-	// дни недели (множественные)
-	// -------------------------
 	var days []string
 	for name, num := range weekdays {
 		if strings.Contains(input, name) {
@@ -62,18 +51,13 @@ func parseToCronInternal(input string) ([]string, error) {
 		return buildCron(input, "*", "*", strings.Join(days, ","))
 	}
 
-	// -------------------------
-	// каждый месяц X числа
-	// -------------------------
 	if strings.Contains(input, "числа") {
 		return parseMonthDays(input)
 	}
 
-	return nil, fmt.Errorf("непонятный формат", input)
+	return nil, fmt.Errorf("непонятный формат: %s", input)
 }
 
-// -------------------------
-// ВСПОМОГАТЕЛЬНЫЕ
 // -------------------------
 
 func normalize(s string) string {
@@ -100,7 +84,7 @@ func extractTimes(input string) ([]time.Time, error) {
 	}
 
 	if len(times) == 0 {
-		return nil, fmt.Errorf("не найдено время", input)
+		return nil, fmt.Errorf("не найдено время: %s", input)
 	}
 
 	return times, nil
@@ -137,7 +121,7 @@ func parseInterval(input string) ([]string, error) {
 	parts := strings.Fields(input)
 
 	if len(parts) < 3 {
-		return nil, fmt.Errorf("непонятный формат", input)
+		return nil, fmt.Errorf("непонятный формат интервала: %s", input)
 	}
 
 	n, err := strconv.Atoi(parts[1])
@@ -158,7 +142,7 @@ func parseInterval(input string) ([]string, error) {
 		return []string{fmt.Sprintf("@every %dh", n*24)}, nil
 	}
 
-	return nil, fmt.Errorf("непонятный интервал", input)
+	return nil, fmt.Errorf("непонятный интервал: %s", input)
 }
 
 // -------------------------
@@ -179,7 +163,7 @@ func parseMonthDays(input string) ([]string, error) {
 	}
 
 	if len(days) == 0 {
-		return nil, fmt.Errorf("не найдены дни месяца", input)
+		return nil, fmt.Errorf("не найдены дни месяца: %s", input)
 	}
 
 	return buildCron(input, strings.Join(days, ","), "*", "*")
