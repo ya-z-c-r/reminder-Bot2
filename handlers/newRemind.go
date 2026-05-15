@@ -39,6 +39,7 @@ func HandleAddTime(c tb.Context, flow *state.UserFlow) error {
 	}
 
 	flow.RemindAt = t
+	flow.Done = false
 
 	err = SaveNewRimind(c, flow)
 
@@ -62,10 +63,10 @@ func HandlerAddRepeatInterval(c tb.Context, flow *state.UserFlow) error {
 	}
 
 	flow.RepeatInterval = r
+	flow.Done = true
 
 	return SaveNewRimind(c, flow)
 }
-
 
 func HandlerAddRepeatText(c tb.Context, flow *state.UserFlow) error {
 	flow.Text = c.Text()
@@ -96,6 +97,7 @@ func SaveNewRimind(c tb.Context, flow *state.UserFlow) error {
 		Text:           flow.Text,
 		RemindAt:       flow.RemindAt,
 		RepeatInterval: flow.RepeatInterval,
+		Done:           flow.Done,
 	}
 
 	err := db.NewRemind(reminder)

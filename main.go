@@ -88,16 +88,12 @@ func main() {
 			return handlers.HandleAddText(c, flow)
 
 		case state.StateRepeatAddText:
-			log.Println("Current state:", flow.State)
-			log.Println("Text:", c.Text())
 			return handlers.HandlerAddRepeatText(c, flow)
 
 		case state.StateAddTime:
 			return handlers.HandleAddTime(c, flow)
 
 		case state.StateAddRepeatInterval:
-			log.Println("Current state:", flow.State)
-			log.Println("Text:", c.Text())
 			return handlers.HandlerAddRepeatInterval(c, flow)
 		}
 

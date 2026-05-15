@@ -17,6 +17,7 @@ type UserFlow struct {
 	Text           string
 	RemindAt       time.Time
 	RepeatInterval string
+	Done           bool
 }
 
 var Flows = make(map[int64]*UserFlow)

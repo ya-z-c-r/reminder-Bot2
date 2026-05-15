@@ -9,4 +9,5 @@ type Reminder struct {
 	RemindAt       time.Time
 	RepeatInterval string
 	ID             int
+	Done           bool
 }
