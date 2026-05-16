@@ -1,0 +1,25 @@
+# binaries
+bot
+*.exe
+*.out
+
+# logs
+*.log
+
+# env
+.env
+
+# vscode
+.vscode/
+
+# idea
+.idea/
+
+# macOS
+.DS_Store
+
+# docker
+postgres_data/
+
+# tmp
+tmp/

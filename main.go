@@ -1,27 +1,43 @@
 package main
 
 import (
-	"flag"
 	"log"
+	"os"
 	"time"
-
-	tb "gopkg.in/telebot.v3"
 
 	"reminder-bot/db"
 	"reminder-bot/handlers"
 	"reminder-bot/state"
 	"reminder-bot/ui"
+
+	"github.com/joho/godotenv"
+	tb "gopkg.in/telebot.v3"
 )
 
-func mustToken() string {
-	token := flag.String("token", "", "токен телеграмм бота")
-	flag.Parse()
+// func mustToken() string {
+// 	token := flag.String("token", "", "токен телеграмм бота")
+// 	flag.Parse()
 
-	if *token == "" {
-		log.Fatal("токена не обнаружено")
+// 	if *token == "" {
+// 		log.Fatal("токена не обнаружено")
+// 	}
+
+// 	return *token
+// }
+
+func mustToken() string {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Ошибка загрузки .env")
 	}
 
-	return *token
+	token := os.Getenv("BOT_TOKEN")
+
+	if token == "" {
+		log.Fatal("токен не найден")
+	}
+
+	return token
 }
 
 func main() {
