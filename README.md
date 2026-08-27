@@ -17,8 +17,18 @@
 ### Запуск через Docker
 
 ```bash
-docker build -t reminder-bot .
-docker run --env-file .env reminder-bot
+sudo docker build -t reminder-bot .
+sudo docker run --env-file .env reminder-bot
+```
+
+### Старт на прод через Docker Compose
+#### Скрытый старт
+``` bash
+sudo docker compose up -d
+```
+#### Старт в окне терминала
+```bash
+sudo docker compose up
 ```
 
 ## Ключевые технические особенности
@@ -34,7 +44,7 @@ docker run --env-file .env reminder-bot
 
 ## Roadmap
 
-* CI/CD через GitHub Actions
-* Автоматизированное тестирование
-* Мониторинг и логирование
-* Повышение отказоустойчивости сервиса
+- [] CI/CD через GitHub Actions
+- [] Автоматизированное тестирование
+- [] Мониторинг и логирование
+- [] Повышение отказоустойчивости сервиса
