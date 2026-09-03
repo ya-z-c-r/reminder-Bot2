@@ -24,7 +24,8 @@ func HandleAddText(c tb.Context, flow *state.UserFlow) error {
 через 10 минут
 через 2 часа
 через 3 дня
-или в формате 2006-01-02 15:04 и 02.01.2006 15:04`)
+или в формате 2006-01-02 15:04 и 02.01.2006 15:04
+введите отменить что бы отменить создание напоминания`)
 }
 
 func HandleAddTime(c tb.Context, flow *state.UserFlow) error {
@@ -86,7 +87,8 @@ func HandlerAddRepeatText(c tb.Context, flow *state.UserFlow) error {
 	каждый месяц 1 и 15 числа в 09:00
 
 	в будни в 10:00
-	по выходным в 12:00`)
+	по выходным в 12:00
+	введите "отменить" что бы отменить создание напоминания`)
 }
 
 func SaveNewRimind(c tb.Context, flow *state.UserFlow) error {

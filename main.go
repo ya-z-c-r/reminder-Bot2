@@ -64,6 +64,11 @@ func main() {
 	go db.StartCronWorker(bot)
 
 	bot.Handle("/start", handlers.StartHandler)
+	bot.Handle("отменить", func(c tb.Context) error {
+		delete(state.Flows, c.Sender().ID)
+		c.Send("отменено")
+		return nil
+	})
 	bot.Handle("/ping", handlers.PingHandler)
 	bot.Handle("ping", handlers.PingHandler)
 	bot.Handle(&ui.BtnAddRepeat, func(c tb.Context) error {
