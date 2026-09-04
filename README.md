@@ -42,7 +42,7 @@ sudo docker compose up
 
 ## Roadmap
 
-- [ ] CI/CD через GitHub Actions
+- [x] CI/CD через GitHub Actions
 - [ ] Автоматизированное тестирование
 - [ ] Мониторинг и логирование
 - [ ] Повышение отказоустойчивости сервиса
